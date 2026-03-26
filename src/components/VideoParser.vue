@@ -68,12 +68,16 @@
           </button>
         </div>
       </div>
+
+      <!-- Disclaimer Component -->
+      <Disclaimer />
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import Disclaimer from './Disclaimer.vue'
 
 const videoUrl = ref('')
 const currentUrl = ref('')
