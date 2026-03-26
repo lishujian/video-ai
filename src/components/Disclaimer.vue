@@ -11,7 +11,7 @@
         </p>
         <div class="admin-contact">
           <span class="label">管理员邮箱：</span>
-          <a :href="'mailto:' + email" class="email">{{ email }}</a>
+          <a :href="'mailto:' + email" class="email">{{ email }} </a>
         </div>
       </div>
       <div class="copyright">
