@@ -105,13 +105,15 @@ const vClickOutside = {
 }
 
 const interfaces = [
-  { name: 'OK', url: 'https://video.isyour.love/player/getplayer?url=' },
-  { name: '云播全网解析', url: 'https://video.isyour.love/player/getplayer?url=' },
-  { name: '多线路视频解析 [新]', url: 'https://jx.playerjy.com/?url=' },
+  { name: '极速视频解析(粤语优先)', url: 'https://jx.m3u8.tv/jiexi/?url=' },
+  { name: '极速视频解析', url: 'https://jx.dmflv.cc/?url=' },
+  { name: '支持选集（电视剧）', url: 'https://z1.m1907.top/?jx=' },
+  { name: 'OK(多个渠道选择)', url: 'https://video.isyour.love/player/getplayer?url=' },
   { name: '视频云解析 【全网解析】', url: 'https://jx.xymp4.cc/?url=' },
   { name: '无广告视频解析 【全网解析】', url: 'https://jx.m3u8.tv/jiexi/?url=' },
   { name: '输入片名自动解析 【新】', url: 'https://z1.im1907.top/?jx=' },
   { name: '直接搜片名专用', url: 'https://z1.m1907.top/?jx=' },
+  
 ]
 
 const platforms = [
