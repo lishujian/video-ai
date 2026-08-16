@@ -49,6 +49,17 @@
               placeholder="电脑使用Ctrl+V粘贴网址-手机直接长按粘贴网址" 
               @keyup.enter="handleParse"
             />
+            <button
+              v-if="videoUrl"
+              type="button"
+              class="url-clear-btn"
+              aria-label="删除已保存的网址"
+              @click="handleClearUrl"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
           </div>
         </div>
         
@@ -76,17 +87,33 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import Disclaimer from './Disclaimer.vue'
+
+const STORAGE_KEY = 'video-ai-last-parse'
 
 const videoUrl = ref('')
 const currentUrl = ref('')
 const selectedInterface = ref(0)
 const dropdownOpen = ref(false)
 
+const persistParseState = () => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    url: currentUrl.value,
+    interfaceIndex: selectedInterface.value,
+  }))
+}
+
+const handleClearUrl = () => {
+  videoUrl.value = ''
+  currentUrl.value = ''
+  localStorage.removeItem(STORAGE_KEY)
+}
+
 const selectInterface = (index) => {
   selectedInterface.value = index
   dropdownOpen.value = false
+  if (currentUrl.value) persistParseState()
 }
 
 // Simple Click-Outside Directive
@@ -137,8 +164,23 @@ const handleParse = () => {
     alert('请输入网址或片名')
     return
   }
-  currentUrl.value = videoUrl.value
+  currentUrl.value = videoUrl.value.trim()
+  persistParseState()
 }
+
+onMounted(() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')
+    if (!saved?.url) return
+    videoUrl.value = saved.url
+    currentUrl.value = saved.url
+    if (Number.isInteger(saved.interfaceIndex) && interfaces[saved.interfaceIndex]) {
+      selectedInterface.value = saved.interfaceIndex
+    }
+  } catch {
+    localStorage.removeItem(STORAGE_KEY)
+  }
+})
 
 const openPlatform = (url) => {
   window.open(url, '_blank')
@@ -354,13 +396,15 @@ const openPlatform = (url) => {
   }
 
   .url-input-row {
+    position: relative;
+
     input {
       width: 100%;
       box-sizing: border-box;
       min-height: 46px;
       border: 1px solid @input-border;
       border-radius: 10px;
-      padding: 0 14px;
+      padding: 0 44px 0 14px;
       font-size: 14px;
       color: @text;
       background: @input-bg;
@@ -378,6 +422,44 @@ const openPlatform = (url) => {
       &:focus {
         border-color: @primary;
         box-shadow: 0 0 0 3px @primary-focus;
+      }
+    }
+
+    .url-clear-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 50%;
+      background: #ece7f6;
+      color: #7c6aa8;
+      cursor: pointer;
+      padding: 0;
+      transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+
+      svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        fill: none;
+      }
+
+      &:hover {
+        background: #efe0ea;
+        color: #c45b7a;
+        transform: translateY(-50%) scale(1.06);
+      }
+
+      &:active {
+        transform: translateY(-50%) scale(0.96);
       }
     }
   }
